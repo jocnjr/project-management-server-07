@@ -10,6 +10,8 @@ const Task = require("../models/task");
 
 router.get("/projects", (req, res) => {
   Project.find()
+    .populate("tasks")
+    .sort({ createdAt: -1 })
     .then((projects) => res.json(projects))
     .catch((error) => res.status(500).json(error));
 });

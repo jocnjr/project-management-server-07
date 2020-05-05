@@ -24,6 +24,7 @@ const cors = require("cors");
 mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
+    useUnifiedTopology: true,
   })
   .then((x) => {
     console.log(
