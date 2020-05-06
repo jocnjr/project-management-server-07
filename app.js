@@ -14,10 +14,11 @@ const cors = require("cors");
 // INSTALL THESE DEPENDENCIES: passport-local, passport, bcryptjs, express-session
 // AND UN-COMMENT OUT FOLLOWING LINES:
 
-// const session       = require('express-session');
-// const passport      = require('passport');
+const session = require("express-session");
+const MongoStore = require("connect-mongo")(session);
+const passport = require("passport");
 
-// require('./configs/passport');
+require("./configs/passport");
 
 // IF YOU STILL DIDN'T, GO TO 'configs/passport.js' AND UN-COMMENT OUT THE WHOLE FILE
 
@@ -65,7 +66,23 @@ app.use(favicon(path.join(__dirname, "public", "images", "favicon.ico")));
 
 // ADD SESSION SETTINGS HERE:
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+    cookie: { maxAge: 60000 },
+    store: new MongoStore({
+      mongooseConnection: mongoose.connection,
+      ttl: 24 * 60 * 60, // 1 day
+    }),
+  })
+);
+
 // USE passport.initialize() and passport.session() HERE:
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // default value for title local
 app.locals.title = "Express - Generated with IronGenerator";
@@ -87,5 +104,6 @@ app.use("/", index);
 // api routes
 app.use("/api", require("./routes/project"));
 app.use("/api", require("./routes/task"));
+app.use("/api", require("./routes/auth"));
 
 module.exports = app;
