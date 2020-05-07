@@ -98,12 +98,17 @@ app.use(
 
 // ROUTES MIDDLEWARE STARTS HERE:
 
-const index = require("./routes/index");
-app.use("/", index);
+// const index = require("./routes/index");
+// app.use("/", index);
 
 // api routes
 app.use("/api", require("./routes/project"));
 app.use("/api", require("./routes/task"));
 app.use("/api", require("./routes/auth"));
+
+app.use((req, res, next) => {
+  // If no routes match, send them the React HTML.
+  res.sendFile(__dirname + "/public/index.html");
+});
 
 module.exports = app;
