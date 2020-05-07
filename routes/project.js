@@ -27,6 +27,7 @@ router.get("/projects/:id", (req, res, next) => {
   Project.findById(req.params.id)
     .populate("tasks")
     .then((response) => {
+      // console.log(req.user, response);
       res.status(200).json(response);
     })
     .catch((err) => {
@@ -46,6 +47,7 @@ router.post("/projects", (req, res, next) => {
     title: req.body.title,
     description: req.body.description,
     tasks: [],
+    owner: req.user._id,
   })
     .then((response) => {
       res.json(response);
